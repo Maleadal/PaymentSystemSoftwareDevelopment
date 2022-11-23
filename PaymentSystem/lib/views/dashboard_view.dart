@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sd_paymentsystem/globals.dart';
 
 import '../widgets/utils.dart';
 
@@ -20,7 +21,11 @@ class _DasboardViewState extends State<DashboardView> {
         body: Row(
           children: [
             // * Drawer
-            drawer("Dashboard", context)
+            drawer("Dashboard", context),
+
+            // * Main Data
+            // TODO: Go make a database and populate it with dummy data to be able to test the app
+            // TODO: Make a System to record the count and show it as a summary to the user
           ],
         ));
   }

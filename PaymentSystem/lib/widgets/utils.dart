@@ -41,13 +41,7 @@ Drawer drawer(String location, BuildContext context) {
       ListTile(
         onTap: () {
           isLoggedIn = false;
-          if (showDialog("Are you sure you want to log out?", context)) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/login_view/', (route) => false);
-            showError("Log out successful!", context);
-          } else {
-            showError("Log out cancelled!", context);
-          }
+          showPrompt("Are you sure you want to log out?", context);
         },
         leading: const Icon(Icons.logout, color: Colors.white),
         title: const Text("L O G O U T"),
@@ -56,23 +50,29 @@ Drawer drawer(String location, BuildContext context) {
   );
 }
 
-bool showDialog(String prompt, BuildContext context) {
-  bool val = false;
-  AlertDialog(
-    title: Text(prompt),
-    actions: [
-      TextButton(
-          onPressed: () {
-            val = false;
-          },
-          child: const Text("No")),
-      TextButton(
-          onPressed: () {
-            val = true;
-          },
-          child: const Text("Yes")),
-    ],
-  );
-
-  return val;
+void showPrompt(String prompt, BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(prompt),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("No")),
+            TextButton(
+                onPressed: () {
+                  isLoggedIn = false;
+                  showError("Logged Out", context);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/login_view/',
+                    (route) => false,
+                  );
+                },
+                child: const Text("Yes")),
+          ],
+        );
+      });
 }

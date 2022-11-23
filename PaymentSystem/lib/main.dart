@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sd_paymentsystem/views/dashboard_view.dart';
-
 import 'views/login_view.dart';
 
 void main() {
