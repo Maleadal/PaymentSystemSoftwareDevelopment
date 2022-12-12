@@ -33,12 +33,6 @@ Drawer drawer(String location, BuildContext context) {
         title: const Text("D A S H B O A R D"),
       ),
       ListTile(
-        onTap: () {},
-        tileColor: location == "Settings" ? Colors.grey[700] : null,
-        leading: const Icon(Icons.settings, color: Colors.white),
-        title: const Text("S E T T I N G S"),
-      ),
-      ListTile(
         onTap: () {
           isLoggedIn = false;
           showPrompt("Are you sure you want to log out?", context);

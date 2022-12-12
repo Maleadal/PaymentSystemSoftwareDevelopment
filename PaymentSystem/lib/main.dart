@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sd_paymentsystem/views/customers/list.dart';
 import 'package:sd_paymentsystem/views/dashboard_view.dart';
 import 'views/login_view.dart';
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/dashboard_view/': (context) => const DashboardView(),
         '/login_view/': (context) => const LoginView(),
+        '/customer_list_view/': (context) => const CustomerListView(),
       },
     );
   }

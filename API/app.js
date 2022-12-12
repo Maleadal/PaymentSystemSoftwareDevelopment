@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const adminRouter = require("./routes/admin");
+const customerRouter = require("./routes/customers")
 const middlewares = require("./middlewares");
 
 app.use(express.json());
@@ -20,3 +21,4 @@ app.get("/", (req, res) => {
 app.use(middlewares);
 
 app.use("/api/admin", adminRouter);
+app.use("/api/customer", customerRouter)
