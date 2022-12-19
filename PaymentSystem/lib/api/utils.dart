@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:sd_paymentsystem/api/models/admin.dart';
 
+import '../globals.dart';
 import 'models/customer.dart';
 
 String url = 'localhost:3000';
@@ -43,8 +44,57 @@ Future<List<Customer>?> getCustomers(Admin admin) async {
   }
 }
 
-// TODO: Make a delete method in api and this
-Future deleteCustomer(int id) async {}
+Future deleteCustomer(int id) async {
+  try {
+    var response = await http.post(Uri.http(url, 'api/customer/delete'),
+        body: jsonEncode({
+          "key": apiKey,
+          "user": admin.username,
+          "password": admin.password,
+          "id": id
+        }),
+        headers: headers);
 
-// TODO: Make an edit method in api and this
-Future editCustomer(int id) async {}
+    debugPrint(response.body);
+  } catch (err) {
+    debugPrint(err.toString());
+  }
+}
+
+Future editCustomer(Customer customer) async {
+  try {
+    await http.post(Uri.http(url, 'api/customer/edit'),
+        body: jsonEncode({
+          "key": apiKey,
+          "user": admin.username,
+          "password": admin.password,
+          "id": customer.id,
+          "first_name": customer.firstName,
+          "middle_name": customer.middleName,
+          "last_name": customer.lastName,
+          "address": customer.address
+        }),
+        headers: headers);
+  } catch (err) {
+    debugPrint(err.toString());
+  }
+}
+
+Future addCustomer(String firstName, String middleName, String lastName,
+    String address) async {
+  try {
+    await http.post(Uri.http(url, 'api/customer/add'),
+        body: jsonEncode({
+          "key": apiKey,
+          "user": admin.username,
+          "password": admin.password,
+          "first_name": firstName,
+          "middle_name": middleName,
+          "last_name": lastName,
+          "address": address
+        }),
+        headers: headers);
+  } catch (err) {
+    debugPrint(err.toString());
+  }
+}

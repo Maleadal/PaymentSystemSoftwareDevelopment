@@ -49,9 +49,48 @@ Customer.deleteCustomer = (id, result) => {
   });
 };
 
-// TODO: Update the query and add the parameters
-Customer.editCustomer = (data, result) =>{
-  const query = "UPDATE customer SET last_name=?, first_name=?, middle_name=?, address=? WHERE id=?"
-  conn.query()
-}
+Customer.addCustomer = (
+  last_name,
+  first_name,
+  middle_name,
+  address,
+  result
+) => {
+  const query =
+    "INSERT INTO customer(first_name, middle_name, last_name, address) VALUES(?, ?, ?, ?)";
+  conn.query(
+    query,
+    [first_name, middle_name, last_name, address],
+    (err, rows, fields) => {
+      if (err) {
+        console.log("Error in query: ", err);
+      } else {
+        result(null, { message: "Successfully added" });
+      }
+    }
+  );
+};
+
+Customer.editCustomer = (
+  last_name,
+  first_name,
+  middle_name,
+  address,
+  id,
+  result
+) => {
+  const query =
+    "UPDATE customer SET last_name=?, first_name=?, middle_name=?, address=? WHERE id=?";
+  conn.query(
+    query,
+    [last_name, first_name, middle_name, address, id],
+    (err, rows, fields) => {
+      if (err) {
+        console.log("Error in query: ", err);
+      } else {
+        result(null, { message: "Edited customer with id: " + id });
+      }
+    }
+  );
+};
 module.exports = Customer;

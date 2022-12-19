@@ -2,7 +2,9 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const adminRouter = require("./routes/admin");
-const customerRouter = require("./routes/customers")
+const customerRouter = require("./routes/customers");
+const paymentRouter = require("./routes/payment");
+const recordRouter = require("./routes/record");
 const middlewares = require("./middlewares");
 
 app.use(express.json());
@@ -21,4 +23,6 @@ app.get("/", (req, res) => {
 app.use(middlewares);
 
 app.use("/api/admin", adminRouter);
-app.use("/api/customer", customerRouter)
+app.use("/api/customer", customerRouter);
+app.use("/api/payment", paymentRouter);
+app.use("/api/record", recordRouter);

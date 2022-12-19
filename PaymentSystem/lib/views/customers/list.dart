@@ -3,6 +3,8 @@ import 'package:flutter/src/widgets/framework.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sd_paymentsystem/api/models/customer.dart';
+import 'package:sd_paymentsystem/api/utils.dart';
+import 'package:sd_paymentsystem/views/customers/edit.dart';
 
 import '../../globals.dart';
 
@@ -29,6 +31,19 @@ class _CustomerListViewState extends State<CustomerListView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Customer List"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/add_customer_view/');
+                },
+                icon: const Icon(
+                  Icons.add,
+                  size: 40,
+                )),
+          )
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,13 +58,32 @@ class _CustomerListViewState extends State<CustomerListView> {
                   textAlign: TextAlign.center,
                   decoration: const InputDecoration(hintText: "Search"),
                   controller: _search,
-                  onChanged: (value) {},
+                  onChanged: (value) async {
+                    var temp = (await getCustomers(admin))!;
+                    setState(() {
+                      customers = temp;
+                    });
+
+                    setState(() {
+                      customers = customers
+                          .where((element) =>
+                              element.firstName
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()) ||
+                              element.lastName
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()))
+                          .toList();
+                    });
+                  },
                 ),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  var temp = (await getCustomers(admin))!;
                   setState(() {
                     _search.text = "";
+                    customers = temp;
                   });
                 },
                 child: const Text("Clear"),
@@ -72,13 +106,23 @@ class _CustomerListViewState extends State<CustomerListView> {
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
-                        int id = customers[index].id;
+                        Customer customer = customers[index];
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    EditCustomerView(customer: customer)));
                       },
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () {
+                      onPressed: () async {
                         int id = customers[index].id;
+                        await deleteCustomer(id);
+                        var temp = await getCustomers(admin);
+                        setState(() {
+                          customers = temp!;
+                        });
                       },
                     ),
                   ]),

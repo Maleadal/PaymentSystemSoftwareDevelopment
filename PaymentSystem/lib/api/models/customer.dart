@@ -14,7 +14,7 @@ class Customer {
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
         lastName: json['last_name'],
-        address: json['address'],
+        address: json['address'].toString().replaceAll('\n', ' '),
         firstName: json['first_name'],
         id: json['id'],
         middleName: json['middle_name']);
