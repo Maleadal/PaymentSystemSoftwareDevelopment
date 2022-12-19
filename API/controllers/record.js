@@ -13,12 +13,12 @@ getRecords = (req, res) => {
 };
 
 deleteRecord = (req, res) => {
-  id = req.body.id;
-  if (!id) {
-    return res.send("ID is required");
+  const {customer_id, payment_id} = req.body;
+  if (!customer_id || !payment_id) {
+    return res.send("Error: Data sent was insufficient");
   }
 
-  recordModel.deleteRecord(id, (err, payment) => {
+  recordModel.deleteRecord(customer_id, payment_id, (err, payment) => {
     if (err) {
       res.send("Error: " + err);
       console.log("Error in " + __dirname + ": " + err);
@@ -44,8 +44,24 @@ addRecord = (req, res) => {
   });
 };
 
+findRecord = (req, res) => {
+  const {customer_id, payment_id} = req.body;
+  if (!customer_id || !payment_id) {
+    return res.send("Error: Data sent was insufficient");
+  }
+  recordModel.findRecord(customer_id, payment_id, (err, record) => {
+    if (err) {
+      res.send("Error: " + err);
+      console.log("Error in " + __dirname + ": " + err);
+    } else {
+      res.status(200).send(record);
+    }
+  });
+};
+
 module.exports = {
   getRecords,
   addRecord,
   deleteRecord,
+  findRecord,
 };

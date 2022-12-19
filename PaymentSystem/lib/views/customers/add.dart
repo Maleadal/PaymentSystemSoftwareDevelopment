@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sd_paymentsystem/api/models/customer.dart';
 import 'package:sd_paymentsystem/api/utils.dart';
 import 'package:sd_paymentsystem/widgets/utils.dart';
 
@@ -31,7 +30,6 @@ class _AddCustomerViewState extends State<AddCustomerView> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add a Customer"),

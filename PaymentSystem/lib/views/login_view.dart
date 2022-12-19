@@ -38,7 +38,7 @@ class _LoginViewState extends State<LoginView> {
       ),
       body: Column(children: [
         Center(
-            child: Container(
+            child: SizedBox(
           width: width * 0.3,
           height: height * 0.4,
           child: Column(

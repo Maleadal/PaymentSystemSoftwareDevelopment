@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:sd_paymentsystem/api/models/customer.dart';
 import 'package:sd_paymentsystem/api/utils.dart';
-import 'package:sd_paymentsystem/views/customers/edit.dart';
+import 'package:sd_paymentsystem/views/payments/edit.dart';
 
+import '../../api/models/payment.dart';
 import '../../globals.dart';
 
-class CustomerListView extends StatefulWidget {
-  const CustomerListView({super.key});
+class RecordListView extends StatefulWidget {
+  final Payment payment;
+  const RecordListView({super.key, required this.payment});
 
   @override
-  State<CustomerListView> createState() => _CustomerListViewState();
+  State<RecordListView> createState() => _RecordListViewState();
 }
 
-class _CustomerListViewState extends State<CustomerListView> {
+class _RecordListViewState extends State<RecordListView> {
   late TextEditingController _search;
 
   @override
@@ -27,20 +28,7 @@ class _CustomerListViewState extends State<CustomerListView> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Customer List"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/add_customer_view/');
-                },
-                icon: const Icon(
-                  Icons.add,
-                  size: 40,
-                )),
-          )
-        ],
+        title: const Text("Record List"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,10 +65,17 @@ class _CustomerListViewState extends State<CustomerListView> {
               ),
               TextButton(
                 onPressed: () async {
-                  var temp = (await getCustomers(admin))!;
-                  setState(() {
-                    _search.text = "";
-                    customers = temp;
+                  await getRecords().then((value) {
+                    setState(() {
+                      _search.text = "";
+                      records = value!;
+                    });
+                  });
+
+                  await getCustomers(admin).then((value) {
+                    setState(() {
+                      customers = value!;
+                    });
                   });
                 },
                 child: const Text("Clear"),
@@ -98,27 +93,35 @@ class _CustomerListViewState extends State<CustomerListView> {
                   onTap: () {},
                   title: Text(
                       "${customers[index].firstName} ${customers[index].middleName}. ${customers[index].lastName}"),
-                  subtitle: Text(customers[index].address),
+                  subtitle: Text(
+                      "Payment Status: ${records.where((element) => element.paymentID == widget.payment.id && element.customerID == customers[index].id).isEmpty ? "Pending" : "Paid"}"),
                   trailing: Wrap(spacing: 12, children: [
                     IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        Customer customer = customers[index];
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    EditCustomerView(customer: customer)));
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
+                      icon: Icon(records
+                              .where(
+                                (element) =>
+                                    element.paymentID == widget.payment.id &&
+                                    element.customerID == customers[index].id,
+                              )
+                              .isEmpty
+                          ? Icons.check_box_outline_blank
+                          : Icons.check_box),
                       onPressed: () async {
-                        int id = customers[index].id;
-                        await deleteCustomer(id);
-                        var temp = await getCustomers(admin);
-                        setState(() {
-                          customers = temp!;
+                        if (records
+                            .where((element) =>
+                                element.paymentID == widget.payment.id &&
+                                element.customerID == customers[index].id)
+                            .isEmpty) {
+                          await addRecord(
+                              customers[index].id, widget.payment.id);
+                        } else {
+                          await deleteRecord(
+                              customers[index].id, widget.payment.id);
+                        }
+                        await getRecords().then((value) {
+                          setState(() {
+                            records = value!;
+                          });
                         });
                       },
                     ),

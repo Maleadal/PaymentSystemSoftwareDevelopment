@@ -20,6 +20,8 @@ class _DasboardViewState extends State<DashboardView> {
 
   void setAsyncVariables() async {
     customers = (await getCustomers(admin))!;
+    payments = (await getPayments())!;
+    records = (await getRecords())!;
   }
 
   @override
@@ -36,7 +38,32 @@ class _DasboardViewState extends State<DashboardView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // * Drawer
-            drawer("Dashboard", context),
+            Drawer(
+              child: Column(children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.favorite,
+                    color: Colors.white,
+                  ),
+                  padding: const EdgeInsets.all(30),
+                  onPressed: () {},
+                ),
+                ListTile(
+                  tileColor: Colors.grey[700],
+                  onTap: () {},
+                  leading: const Icon(Icons.home, color: Colors.white),
+                  title: const Text("D A S H B O A R D"),
+                ),
+                ListTile(
+                  onTap: () {
+                    isLoggedIn = false;
+                    showPrompt("Are you sure you want to log out?", context);
+                  },
+                  leading: const Icon(Icons.logout, color: Colors.white),
+                  title: const Text("L O G O U T"),
+                )
+              ]),
+            ),
             // * Options
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -64,7 +91,9 @@ class _DasboardViewState extends State<DashboardView> {
                       ),
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed('/payment_list_view/');
+                      },
                       title: Row(
                         children: const [
                           Icon(Icons.arrow_right),

@@ -31,14 +31,14 @@ Record.getAll = (result) => {
     });
   };
 
-  Record.deleteRecord = (id, result) => {
-    const query2 = "DELETE FROM records WHERE id = ?";
-    conn.query(query2, id, (err, rows, fields) => {
+  Record.deleteRecord = (customer_id, payment_id, result) => {
+    const query2 = "DELETE FROM records WHERE customer_id = ? AND payment_id = ?";
+    conn.query(query2, [customer_id, payment_id], (err, rows, fields) => {
       if (err) {
         console.log("Error in query: ", err);
       } else {
         console.log("Query Successful");
-        result(null, {message: "Record with id " + id + " Deleted"})
+        result(null, {message: "Record Deleted"})
       }
     });
   };
@@ -53,5 +53,16 @@ Record.getAll = (result) => {
       }
     });
   };
+
+  Record.findRecord = (customer_id, payment_id, result) =>{
+    const query = "SELECT * FROM records WHERE customer_id = ? AND payment_id = ?";
+    conn.query(query, [customer_id, payment_id], (err, rows, fields)=>{
+      if (err) {
+        console.log("Error in query: ", err);
+      } else {
+        result(null, rows);
+      }
+    })
+  }
 
 module.exports = Record
